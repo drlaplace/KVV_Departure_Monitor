@@ -6,28 +6,17 @@ from typing import Any
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 
-from homeassistant.config_entries import (
-    ConfigEntry,
-    ConfigFlow,
-    ConfigFlowResult,
-    OptionsFlow,
-)
+from homeassistant import config_entries
 
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 from .api import KVVApi
-from .const import (
-    DEFAULT_SCAN_INTERVAL,
-    DOMAIN,
-    MIN_SCAN_INTERVAL,
-    CONF_STOP,
-    CONF_SCAN_INTERVAL,
-)
+from .const import DOMAIN, DEFAULT_UPDATE_INTERVAL
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
+class ExampleConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Example Integration."""
 
     VERSION = 1
@@ -37,15 +26,14 @@ class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
         self.search_name: str | None = None
         self.found_points: list[dict] = []
 
+    @staticmethod
+    @callback
     def async_get_options_flow(config_entry):
-        """Get the options flow for this handler."""
-        # Remove this method and the ExampleOptionsFlowHandler class
-        # if you do not want any options for your integration.
-        return ExampleOptionsFlowHandler(config_entry)
+        return KVVOptionsFlowHandler(config_entry)
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
-    ) -> ConfigFlowResult:
+    ) -> config_entries.ConfigFlowResult:
         """Erster Schritt: Nutzer gibt einen Suchbegriff ein"""
         errors = {}
 
@@ -71,7 +59,9 @@ class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
 
-    async def async_step_station(self, user_input=None) -> ConfigFlowResult:
+    async def async_step_station(
+        self, user_input=None
+    ) -> config_entries.ConfigFlowResult:
         """Zweiter Schritt: Nutzer wählt eine Station aus"""
         errors = {}
 
@@ -101,33 +91,35 @@ class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 
 
-class ExampleOptionsFlowHandler(OptionsFlow):
-    """Handles the options flow."""
+class KVVOptionsFlowHandler(config_entries.OptionsFlow):
+    """Options-Flow für KVV Departure Monitor."""
 
-    def __init__(self, config_entry: ConfigEntry) -> None:
-        """Initialize options flow."""
+    def __init__(self, config_entry: config_entries.ConfigEntry):
+        """Initialisiert den Options-Flow."""
         self.config_entry = config_entry
-        self.options = dict(config_entry.options)
 
     async def async_step_init(self, user_input=None):
-        """Handle options flow."""
+        """Zeigt die Optionsseite und verarbeitet Änderungen."""
         if user_input is not None:
-            options = self.config_entry.options | user_input
-            return self.async_create_entry(title="", data=options)
+            # Speichere die neuen Optionen
+            return self.async_create_entry(title="", data=user_input)
 
-        # It is recommended to prepopulate options fields with default values if available.
-        # These will be the same default values you use on your coordinator for setting variable values
-        # if the option has not been set.
-        data_schema = vol.Schema(
-            {
-                vol.Required(
-                    CONF_SCAN_INTERVAL,
-                    default=self.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
-                ): (vol.All(vol.Coerce(int), vol.Clamp(min=MIN_SCAN_INTERVAL))),
-            }
+        # Standardwert verwenden, falls noch nichts konfiguriert ist
+        update_interval = self.config_entry.options.get(
+            "update_interval", DEFAULT_UPDATE_INTERVAL
         )
 
-        return self.async_show_form(step_id="init", data_schema=data_schema)
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(
+                        "update_interval",
+                        default=update_interval,
+                    ): vol.All(vol.Coerce(int), vol.Range(min=10, max=300)),
+                }
+            ),
+        )
 
 
 class CannotConnect(HomeAssistantError):

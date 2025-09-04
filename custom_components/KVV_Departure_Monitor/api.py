@@ -117,28 +117,35 @@ class KVVApi:
 
             departures = []
             for dep in departure_list:
-                # Prüfen, ob dep ein Dictionary ist
                 if not isinstance(dep, dict):
                     _LOGGER.debug("Überspringe ungültigen Datensatz: %s", dep)
                     continue
 
+                # Linie & Richtung
                 serving_line = dep.get("servingLine", {})
                 if isinstance(serving_line, str):
-                    # Falls servingLine fälschlicherweise ein String ist → skip
                     _LOGGER.debug("Unerwartetes servingLine-Format: %s", serving_line)
-                    continue
+                    line = "?"
+                    direction = "Unbekannt"
+                else:
+                    line = serving_line.get("number", "?")
+                    direction = serving_line.get("direction", "Unbekannt")
 
-                line = serving_line.get("number", "?")
-                direction = serving_line.get("direction", "Unbekannt")
                 countdown = dep.get("countdown", "?")
-                realtime = dep.get("realtime", False)
+                realtime = bool(dep.get("realtime", False))
+
+                # dateTime & realDateTime übernehmen, falls vorhanden
+                date_time = dep.get("dateTime")
+                real_date_time = dep.get("realDateTime")
 
                 departures.append(
                     {
                         "line": line,
                         "direction": direction,
                         "countdown": countdown,
-                        "realtime": bool(realtime),
+                        "realtime": realtime,
+                        "dateTime": date_time,
+                        "realDateTime": real_date_time,
                     }
                 )
 
