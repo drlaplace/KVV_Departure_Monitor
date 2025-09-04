@@ -13,20 +13,16 @@
     "step": {
       "user": {
         "data": {
-          "host": "Host",
-          "password": "Password",
-          "username": "Username"
+          "stop_name": "station"
         },
-        "description": "Enter your station",
+        "description": "enter your station",
         "title": "KVV Departure Monitor"
       },
-      "reconfigure": {
+      "station": {
         "data": {
-          "host": "Host",
-          "password": "Password",
-          "username": "Username"
+          "stop_name": "station"
         },
-        "description": "Enter your station",
+        "description": "select your station",
         "title": "KVV Departure Monitor"
       }
     }
@@ -37,8 +33,8 @@
         "data": {
           "scan_interval": "Scan Interval (seconds)"
         },
-        "description": "Amend your options.",
-        "title": "Example Integration Options"
+        "description": "Enter update interval",
+        "title": "KVV Departure Monitor"
       }
     }
   }

@@ -13,16 +13,16 @@
     "step": {
       "user": {
         "data": {
-          "stop_name": "station"
+          "stop_name": "Haltstelle"
         },
-        "description": "Enter your station",
+        "description": "Geben Sie Ihre Haltestelle ein",
         "title": "KVV Departure Monitor"
       },
       "station": {
         "data": {
-          "stop_name": "station"
+          "stop_name": "Haltstelle"
         },
-        "description": "select your station",
+        "description": "Wählen Sie Ihre Haltestelle aus",
         "title": "KVV Departure Monitor"
       }
     }

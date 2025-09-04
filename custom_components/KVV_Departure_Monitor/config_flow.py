@@ -1,5 +1,3 @@
-"""Config flow for Integration 101 Template integration."""
-
 from __future__ import annotations
 
 import logging
@@ -27,13 +25,6 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
-
-# TODO adjust the data schema to the data that you need
-STEP_USER_DATA_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_STOP, description={"suggested_value": "Hummelberg"}): str,
-    }
-)
 
 
 class ExampleConfigFlow(ConfigFlow, domain=DOMAIN):
