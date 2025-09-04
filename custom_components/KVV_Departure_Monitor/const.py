@@ -1,5 +1,3 @@
-"""Constants for the KVV_Departure_Monitor integration."""
-
 DOMAIN = "KVV_Departure_Monitor"
 
 DEFAULT_SCAN_INTERVAL = 60

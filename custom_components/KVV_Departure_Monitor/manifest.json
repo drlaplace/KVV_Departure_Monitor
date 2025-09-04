@@ -2,16 +2,16 @@
   "domain": "KVV_Departure_Monitor",
   "name": "KVV Departure Monitor",
   "codeowners": [
-    "DrLaplace"
+    "@drlaplace"
   ],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/drlaplace/HAIntegrationExamples",
+  "documentation": "https://github.com/drlaplace/KVV_Departure_Monitor",
   "homekit": {},
   "iot_class": "cloud_polling",
   "requirements": [],
   "single_config_entry": false,
   "ssdp": [],
-  "version": "1.0.1",
+  "version": "1.0.0",
   "zeroconf": []
 }
