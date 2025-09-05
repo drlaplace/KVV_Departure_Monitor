@@ -1,2 +1,0 @@
-DOMAIN = "KVV_Departure_Monitor"
-DEFAULT_UPDATE_INTERVAL = 30
