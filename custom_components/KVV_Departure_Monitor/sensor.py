@@ -83,7 +83,6 @@ class KVVDepartureSensor(CoordinatorEntity, SensorEntity):
             return "Keine Daten"
 
         first_departure = data[0]
-        print(first_departure)
         # dateTime nutzen, falls vorhanden
         dt = first_departure.get("dateTime")
         hour = str(dt.get("hour", "??")).zfill(2)

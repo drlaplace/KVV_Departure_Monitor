@@ -26,11 +26,6 @@ class ExampleConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.search_name: str | None = None
         self.found_points: list[dict] = []
 
-    @staticmethod
-    @callback
-    def async_get_options_flow(config_entry):
-        return KVVOptionsFlowHandler(config_entry)
-
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> config_entries.ConfigFlowResult:
@@ -90,13 +85,21 @@ class ExampleConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="station", data_schema=schema, errors=errors
         )
 
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry):
+        return KVVOptionsFlowHandler(config_entry)
+
 
 class KVVOptionsFlowHandler(config_entries.OptionsFlow):
-    """Options-Flow für KVV Departure Monitor."""
+    def __init__(self, config_entry):
+        super().__init__()
+        self._entry_id = config_entry.entry_id
 
-    def __init__(self, config_entry: config_entries.ConfigEntry):
-        """Initialisiert den Options-Flow."""
-        self.config_entry = config_entry
+    @property
+    def config_entry(self):
+        """Liefert das aktuelle ConfigEntry."""
+        return self.hass.config_entries.async_get_entry(self._entry_id)
 
     async def async_step_init(self, user_input=None):
         """Zeigt die Optionsseite und verarbeitet Änderungen."""

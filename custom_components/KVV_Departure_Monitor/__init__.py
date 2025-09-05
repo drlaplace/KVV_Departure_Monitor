@@ -27,7 +27,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             test_departures = await api.get_departures_by_station_id(
                 station_id, limit=1
             )
-            _LOGGER.debug("KVV Testabfrage erfolgreich: %s", test_departures)
+
     except Exception as e:
         _LOGGER.error("KVV API nicht erreichbar: %s", e)
         raise ConfigEntryNotReady from e
