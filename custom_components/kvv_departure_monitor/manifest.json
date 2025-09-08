@@ -1,18 +1,13 @@
 {
   "domain": "kvv_departure_monitor",
   "name": "KVV Departure Monitor",
-  "codeowners": [
-    "@drlaplace"
-  ],
+  "codeowners": ["@drlaplace"],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/drlaplace/KVV_Departure_Monitor",
   "issue_tracker": "https://github.com/drlaplace/KVV_Departure_Monitor/issues",
-  "homekit": {},
   "iot_class": "cloud_polling",
   "requirements": [],
   "single_config_entry": false,
-  "ssdp": [],
-  "version": "1.0.0",
-  "zeroconf": []
+  "version": "1.0.0"
 }
