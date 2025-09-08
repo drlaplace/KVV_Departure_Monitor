@@ -30,8 +30,8 @@ Die Daten stammen von der offiziellen **KVV API** und werden in Sensoren und Lov
 
 3. Kategorie: **Integration** auswählen
 4. Auf **Hinzufügen** klicken
-5. Anschließend in HACS → Integrationen → **KVV Departure Monitor** → **Installieren**
-6. **Home Assistant neu starten**
+5. Anschließend in Einstellungen → Geräte&Dienste → Integration hinzufügen → **KVV Departure Monitor** → **Installieren**
+
 
 ---
 
