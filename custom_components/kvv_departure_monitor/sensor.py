@@ -72,7 +72,7 @@ class KVVDepartureSensor(CoordinatorEntity, SensorEntity):
 
     def __init__(self, coordinator: KVVDataCoordinator, entry: ConfigEntry):
         super().__init__(coordinator)
-        self_station_name = entry.data.get("stop_name", "Unbekannt")
+        self._stop_name = entry.data.get("stop_name", "Unbekannt")
         self._attr_name = f"KVV Abfahrten {entry.data.get('stop_name', 'Unbekannt')}"
         self._attr_unique_id = f"{entry.entry_id}_departures"
 
@@ -101,5 +101,6 @@ class KVVDepartureSensor(CoordinatorEntity, SensorEntity):
     def extra_state_attributes(self):
         """Gibt zusätzliche Infos über die nächsten Abfahrten zurück."""
         return {
-            "station_name": self._station_name,
-            "abfahrten": self.coordinator.data or []}
+            "station_name": self._stop_name,
+            "abfahrten": self.coordinator.data or [],
+        }
