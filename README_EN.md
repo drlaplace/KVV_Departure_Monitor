@@ -5,6 +5,9 @@
 ![Home Assistant](https://img.shields.io/badge/Home%20Assistant-Integration-blue)
 ![Version](https://img.shields.io/github/v/tag/<dein-user>/kvv-departure-monitor?label=Release)
 
+[![Deutsch](https://img.shields.io/badge/Sprache-Deutsch-blue)](README.md)
+[![English](https://img.shields.io/badge/Language-English-green)](README_EN.md)
+
 The **KVV Departure Monitor** is a custom **Home Assistant** integration  
 that displays real-time departure times for **Karlsruher Verkehrsverbund (KVV)** stations.  
 The data is fetched directly from the official **KVV API** and integrated into sensors and Lovelace cards.
