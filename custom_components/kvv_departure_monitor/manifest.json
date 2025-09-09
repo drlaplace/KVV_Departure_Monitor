@@ -5,8 +5,8 @@
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/drlaplace/KVV_Departure_Monitor",
-  "issue_tracker": "https://github.com/drlaplace/KVV_Departure_Monitor/issues",
   "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/drlaplace/KVV_Departure_Monitor/issues",
   "requirements": [],
   "single_config_entry": false,
   "version": "1.0.0"
