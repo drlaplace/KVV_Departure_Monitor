@@ -5,6 +5,9 @@
 ![Home Assistant](https://img.shields.io/badge/Home%20Assistant-Integration-blue)
 ![Version](https://img.shields.io/github/v/tag/<dein-user>/kvv-departure-monitor?label=Release)
 
+[![Deutsch](https://img.shields.io/badge/Sprache-Deutsch-blue)](README.md)
+[![English](https://img.shields.io/badge/Language-English-green)](README_EN.md)
+
 Der **KVV Departure Monitor** ist eine benutzerdefinierte Home Assistant Integration,  
 die Live-Abfahrtszeiten der **Karlsruher Verkehrsverbund (KVV)**-Haltestellen anzeigt.  
 Die Daten stammen von der offiziellen **KVV API** und werden in Sensoren und Lovelace-Karten integriert.
