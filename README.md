@@ -24,16 +24,10 @@ Die Daten stammen von der offiziellen **KVV API** und werden in Sensoren und Lov
 ---
 
 ## **Installation über HACS**
-1. **HACS öffnen** → **Integrationen** → ⚙️ → **Benutzerdefiniertes Repository hinzufügen**
-2. Repository-URL hinzufügen:
-
-   ```
-   https://github.com/dr_laplace/kvv-departure-monitor
-   ```
-
-3. Kategorie: **Integration** auswählen
-4. Auf **Hinzufügen** klicken
-5. Anschließend in Einstellungen → Geräte&Dienste → Integration hinzufügen → **KVV Departure Monitor** → **Installieren**
+1. **HACS öffnen**
+2. KVV Depature Monitor suchen und download
+3. Restart Home Assistant
+4. Anschließend in Einstellungen → Geräte&Dienste → Integration hinzufügen → **KVV Departure Monitor** → **Installieren**
 
 
 ---
@@ -93,8 +87,7 @@ Du kannst die Abfahrten in Lovelace anzeigen, z. B. mit meiner **kvv-departures-
 ```yaml
 type: custom:kvv-departure-card
 entity: sensor.kvv_abfahrten_berghausen_baden_hummelberg
-title: "Abfahrten an Berghausen Hummelberg"
-max_items: 10
+
 ```
 ![Screenshot](https://github.com/drlaplace/kvv-departures-card/blob/main/images/kvv_departures_card.png)
 ## **Changelog**
