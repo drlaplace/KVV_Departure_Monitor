@@ -84,7 +84,7 @@ departures:
 You can display departures in Lovelace using my **kvv-departures-card**:
 
 ```yaml
-type: custom:kvv-departure-card
+type: custom:kvv-departures-card
 entity: sensor.kvv_abfahrten_berghausen_baden_hummelberg
 ```
 
