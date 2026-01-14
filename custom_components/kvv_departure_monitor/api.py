@@ -68,15 +68,31 @@ class KVVApi:
 
             results = []
             for p in points:
-                if isinstance(p, dict) and "name" in p:
-                    raw_name = p.get("name", "")
-                    clean_name = raw_name.split(" (")[0] if raw_name else raw_name
+                if not isinstance(p, dict):
+                    continue
 
-                    ref = p.get("ref", "")
-                    station_id = ref.get("id") if isinstance(ref, dict) else ref
+                # Nur echte Haltestellen
+                if p.get("anyType") != "stop":
+                    continue
 
-                    results.append({"name": raw_name, "id": station_id})
+                raw_name = p.get("name", "")
+                if not raw_name:
+                    continue
 
+                ref = p.get("ref", {})
+                if not isinstance(ref, dict):
+                    continue
+
+                station_id = ref.get("id")
+                if not station_id:
+                    continue
+
+                results.append(
+                    {
+                        "name": raw_name,
+                        "id": station_id,
+                    }
+                )
             return results
 
         except Exception as e:

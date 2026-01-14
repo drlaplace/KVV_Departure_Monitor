@@ -70,6 +70,13 @@ class ExampleConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             selected_name = user_input["station"]
             selected_station_id = station_mapping[selected_name]
 
+            # ✅ DEBUG HIER
+            _LOGGER.info(
+                "KVV ConfigFlow: ausgewählte Station: name='%s', id='%s'",
+                selected_name,
+                selected_station_id,
+            )
+
             return self.async_create_entry(
                 title=f"KVV: {selected_name}",
                 data={
