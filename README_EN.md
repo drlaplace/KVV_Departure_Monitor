@@ -51,7 +51,8 @@ After installation, configure the integration via the Home Assistant UI:
 3. Select **KVV Departure Monitor**
 4. Enter the desired **station name**
 5. Select the correct station from the suggestions
-6. Done 🎉
+6. Select the serving line/direction. Multiple selections are possible.
+7. Done 🎉
 
 ---
 
@@ -98,6 +99,10 @@ entity: sensor.kvv_abfahrten_berghausen_baden_hummelberg
 - Fully HACS compatible
 - Live departure monitor with countdown & direction
 - Integrated Lovelace card support
+### **v1.0.1**
+- Bug fix - only stops, not streets, are selected.
+### **v1.0.1**
+- Select available lines at the stop
 
 ---
 
