@@ -23,8 +23,11 @@ class ExampleConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     def __init__(self) -> None:
         # Zwischenspeicher für den Flow
-        self.search_name: str | None = None
-        self.found_points: list[dict] = []
+        self.search_name = None
+        self.found_points = []
+        self.selected_station_id = None
+        self.selected_station_name = None
+        self.serving_lines = []
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -76,20 +79,104 @@ class ExampleConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 selected_name,
                 selected_station_id,
             )
+            self.selected_station_name = selected_name
+            self.selected_station_id = selected_station_id
 
-            return self.async_create_entry(
-                title=f"KVV: {selected_name}",
-                data={
-                    "stop_name": selected_name,
-                    "station_id": selected_station_id,  # speichert NUR die ID
-                },
-            )
+            # api = KVVApi(self.hass)
+            # self._serving_lines = await api.get_serving_lines(selected_station_id)
+
+            return await self.async_step_lines()
 
         schema = vol.Schema(
             {vol.Required("station"): vol.In(list(station_mapping.keys()))}
         )
         return self.async_show_form(
             step_id="station", data_schema=schema, errors=errors
+        )
+
+    async def async_step_lines(
+        self, user_input: dict[str, Any] | None = None
+    ) -> config_entries.ConfigFlowResult:
+        """Dritter Schritt: Auswahl der Serving Lines (Line + Direction)"""
+
+        errors = {}
+
+        if not getattr(self, "selected_station_id", None):
+            return self.async_abort(reason="station_not_set")
+
+        api = KVVApi(self.hass)
+
+        raw: list[dict] = []
+
+        try:
+            # ✅ RICHTIGE QUELLE
+            raw = await api.get_serving_lines(self.selected_station_id)
+        except Exception as e:
+            _LOGGER.error("Fehler beim Laden der Serving Lines: %s", e)
+            errors["base"] = "api_error"
+
+        if not raw:
+            errors["base"] = "no_lines_found"
+
+        options: dict[str, str] = {}
+        self._line_map: dict[str, dict] = {}
+
+        _LOGGER.info(
+            "RAW: %s",
+            raw,
+        )
+
+        for entry in raw:
+            mode = entry.get("mode", {})
+            diva = mode.get("diva", {})
+
+            line_id = diva.get("line")  # z.B. "22305"
+            dir_code = diva.get("dir")  # "H" / "R"
+
+            number = mode.get("number")  # "S5"
+            destination = mode.get("destination")  # "Wörth (Rhein)"
+
+            _LOGGER.info(
+                "KVV ConfigFlow: ausgewählte Linien: %s → %s %s %s",
+                number,
+                destination,
+                dir_code,
+                line_id,
+            )
+
+            if not all([line_id, dir_code, number, destination]):
+                continue
+
+            label = f"{number} → {destination}"
+            options[label] = label
+
+            self._line_map[label] = {
+                "line": number,
+                "line_id": line_id,
+                "dir": dir_code,  # Richtungscode
+            }
+
+        if not options:
+            return self.async_show_form(step_id="lines", errors=errors)
+
+        if user_input is not None:
+            selected = user_input["lines"]
+
+            selected_lines = [self._line_map[k] for k in selected]
+
+            return self.async_create_entry(
+                title=f"KVV: {self.selected_station_name}",
+                data={
+                    "stop_name": self.selected_station_name,
+                    "station_id": self.selected_station_id,
+                    "serving_lines": selected_lines,
+                },
+            )
+
+        return self.async_show_form(
+            step_id="lines",
+            data_schema=vol.Schema({vol.Required("lines"): cv.multi_select(options)}),
+            errors=errors,
         )
 
     @staticmethod

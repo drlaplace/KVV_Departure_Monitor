@@ -98,7 +98,12 @@ class KVVApi:
         except Exception as e:
             raise Exception(f"Fehler beim Verarbeiten der Daten: {e}")
 
-    async def get_departures_by_station_id(self, station_id: str, limit: int = 10):
+    async def get_departures_by_station_id(
+        self,
+        station_id: str,
+        limit: int = 10,
+        allowed_lines: list[dict] | None = None,
+    ):
         """
         Holt die nächsten Abfahrten an einer bestimmten Haltestelle.
         WICHTIG: Nutzt ausschließlich DEPARTURE_URL.
@@ -116,57 +121,76 @@ class KVVApi:
             "limit": limit,
         }
 
+        departures: list[dict] = []  # ✅ IMMER initialisieren
+
         data = await self._get(self.DEPARTURE_URL, params)
         if not data:
             _LOGGER.warning("Keine Daten von der KVV-Abfahrts-API erhalten")
-            return []
+            return departures
 
         try:
             departure_list = data.get("departureList", [])
-
-            # Wenn departureList KEIN Array ist, leer zurückgeben
             if not isinstance(departure_list, list):
-                _LOGGER.debug(
-                    "Unerwartetes Format für departureList: %s", type(departure_list)
-                )
-                return []
+                return departures
 
-            departures = []
+            # 🔑 Filter-Set vorbereiten
+            allowed = None
+            if allowed_lines:
+                allowed = {(l["line_id"], l["dir"]) for l in allowed_lines}
+
             for dep in departure_list:
-                if not isinstance(dep, dict):
-                    _LOGGER.debug("Überspringe ungültigen Datensatz: %s", dep)
+                serving = dep.get("servingLine", {})
+                proj = serving.get("liErgRiProj", {})
+                # mode = dep.get("mode", {})
+
+                line_id = proj.get("line")
+                dir_code = proj.get("direction")
+
+                if allowed and (line_id, dir_code) not in allowed:
                     continue
-
-                # Linie & Richtung
-                serving_line = dep.get("servingLine", {})
-                if isinstance(serving_line, str):
-                    _LOGGER.debug("Unerwartetes servingLine-Format: %s", serving_line)
-                    line = "?"
-                    direction = "Unbekannt"
-                else:
-                    line = serving_line.get("number", "?")
-                    direction = serving_line.get("direction", "Unbekannt")
-
-                countdown = dep.get("countdown", "?")
-                realtime = bool(dep.get("realtime", False))
-
-                # dateTime & realDateTime übernehmen, falls vorhanden
-                date_time = dep.get("dateTime")
-                real_date_time = dep.get("realDateTime")
 
                 departures.append(
                     {
-                        "line": line,
-                        "direction": direction,
-                        "countdown": countdown,
-                        "realtime": realtime,
-                        "dateTime": date_time,
-                        "realDateTime": real_date_time,
+                        "line": serving.get("number", "?"),
+                        "direction": serving.get("direction", "Unbekannt"),
+                        "countdown": dep.get("countdown", "?"),
+                        "realtime": bool(dep.get("realtime", False)),
+                        "dateTime": dep.get("dateTime"),
+                        "realDateTime": dep.get("realDateTime"),
                     }
                 )
-
             return departures
 
         except Exception as e:
             _LOGGER.error("Fehler beim Verarbeiten der Abfahrtsdaten: %s", e)
+            return departures
+
+    async def get_serving_lines(self, station_id: str):
+        """
+        Liefert alle Serving Lines einer Haltestelle
+        Quelle: servingLines.lines (NICHT departureList)
+        """
+        params = {
+            "outputFormat": "JSON",
+            "coordOutputFormat": "WGS84[dd.ddddd]",
+            "depType": "stopEvents",
+            "locationServerActive": "1",
+            "mode": "direct",
+            "name_dm": station_id,
+            "type_dm": "stop",
+            "useOnlyStops": "1",
+            "useRealtime": "1",
+            "limit": 1,  # reicht – servingLines ist unabhängig von limit
+        }
+
+        data = await self._get(self.DEPARTURE_URL, params)
+        if not data:
             return []
+
+        serving = data.get("servingLines", {})
+        lines = serving.get("lines", [])
+
+        if not isinstance(lines, list):
+            return []
+
+        return lines

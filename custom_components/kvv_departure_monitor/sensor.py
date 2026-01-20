@@ -55,13 +55,25 @@ class KVVDataCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Lädt aktuelle Abfahrtsdaten von der KVV-API."""
         try:
+            lines = self.config_entry.data.get("serving_lines")
+            _LOGGER.info(
+                "Rufe Abfahrtsdaten für Station %s mit Linien %s ab",
+                self.station_id,
+                lines,
+            )
             departures = await self.api.get_departures_by_station_id(
-                self.station_id, limit=10
+                station_id=self.station_id,
+                limit=10,
+                allowed_lines=self.config_entry.data.get("serving_lines"),
             )
-            _LOGGER.debug(
-                "Abfahrtsdaten für Station %s: %s", self.station_id, departures
+            _LOGGER.info(
+                "Gefilterte Abfahrtsdaten für Station %s: %s",
+                self.station_id,
+                departures,
             )
+
             return departures
+
         except Exception as e:
             _LOGGER.error("Fehler beim Abrufen der Abfahrtsdaten: %s", e)
             return []
