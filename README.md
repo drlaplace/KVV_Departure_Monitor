@@ -52,7 +52,8 @@ Nach der Installation kannst du die Integration über die Home Assistant Oberfl�
 3. Wähle **KVV Departure Monitor**
 4. Gib deine gewünschte **Haltestelle** ein
 5. Wähle die Station aus der Vorschlagsliste
-6. Fertig 🎉
+6. Wähle die gewünschte Linie/Richtung. Mehrfachauswahl ist möglich
+7. Fertig 🎉
 
 ---
 
@@ -96,6 +97,10 @@ entity: sensor.kvv_abfahrten_berghausen_baden_hummelberg
 - HACS-kompatibel
 - Abfahrtsmonitor mit Countdown & Richtung
 - Lovelace-Karte integriert
+### **v1.0.1
+Bugfix- nur Haltestellen, keine Straßen bei der Auswahl
+### **v1.1.0
+Auswahl der verfügbaren Linien an der Haltestelle
 
 ---
 
