@@ -31,7 +31,7 @@
     "step": {
       "init": {
         "data": {
-          "scan_interval": "Scan Interval (seconds)"
+          "update_interval": "Scan Interval (seconds)"
         },
         "description": "Enter update interval",
         "title": "KVV Departure Monitor"

@@ -11,7 +11,7 @@ from homeassistant import config_entries
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 from .api import KVVApi
-from .const import DOMAIN, DEFAULT_UPDATE_INTERVAL
+from .const import DOMAIN, DEFAULT_UPDATE_INTERVAL, DEFAULT_ITEM_LIMIT
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -205,6 +205,10 @@ class KVVOptionsFlowHandler(config_entries.OptionsFlow):
         update_interval = self.config_entry.options.get(
             "update_interval", DEFAULT_UPDATE_INTERVAL
         )
+        # Standardwert verwenden, falls noch nichts konfiguriert ist
+        departure_limit = self.config_entry.options.get(
+            "departure_limit", DEFAULT_ITEM_LIMIT
+        )
 
         return self.async_show_form(
             step_id="init",
@@ -214,6 +218,10 @@ class KVVOptionsFlowHandler(config_entries.OptionsFlow):
                         "update_interval",
                         default=update_interval,
                     ): vol.All(vol.Coerce(int), vol.Range(min=10, max=300)),
+                    vol.Required(
+                        "departure_limit",
+                        default=departure_limit,
+                    ): vol.All(vol.Coerce(int), vol.Range(min=1, max=30)),
                 }
             ),
         )

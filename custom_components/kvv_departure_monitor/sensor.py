@@ -7,7 +7,7 @@ from homeassistant.helpers.update_coordinator import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
-from .const import DOMAIN, DEFAULT_UPDATE_INTERVAL
+from .const import DOMAIN, DEFAULT_UPDATE_INTERVAL, DEFAULT_ITEM_LIMIT
 from .api import KVVApi
 
 _LOGGER = logging.getLogger(__name__)
@@ -55,22 +55,27 @@ class KVVDataCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Lädt aktuelle Abfahrtsdaten von der KVV-API."""
         try:
-            lines = self.config_entry.data.get("serving_lines")
-            _LOGGER.info(
-                "Rufe Abfahrtsdaten für Station %s mit Linien %s ab",
-                self.station_id,
-                lines,
+            # lines = self.config_entry.data.get("serving_lines")
+            limit = self.config_entry.options.get(
+                "departure_limit",
+                DEFAULT_ITEM_LIMIT,
             )
+            # _LOGGER.info(
+            #     "Rufe Abfahrtsdaten für Station %s mit Linien %s ab",
+            #     self.station_id,
+            #     lines,
+            #     limit,
+            # )
             departures = await self.api.get_departures_by_station_id(
                 station_id=self.station_id,
-                limit=10,
+                limit=limit,
                 allowed_lines=self.config_entry.data.get("serving_lines"),
             )
-            _LOGGER.info(
-                "Gefilterte Abfahrtsdaten für Station %s: %s",
-                self.station_id,
-                departures,
-            )
+            # _LOGGER.info(
+            #     "Gefilterte Abfahrtsdaten für Station %s: %s",
+            #     self.station_id,
+            #     departures,
+            # )
 
             return departures
 

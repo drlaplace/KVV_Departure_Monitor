@@ -31,9 +31,10 @@
     "step": {
       "init": {
         "data": {
-          "scan_interval": "Aktualisierungsintervall (Sekunden)"
+          "update_interval": "Aktualisierungsintervall (Sekunden)",
+          "departure_limit": "Limit der Abfahrten"
         },
-        "description": "Geben Sie das Aktualisierungsintervall in Sekunden ein",
+        "description": "Geben Sie das Aktualisierungsintervall und das Abfragelimit der Abfahren ein",
         "title": "KVV Departure Monitor"
       }
     }

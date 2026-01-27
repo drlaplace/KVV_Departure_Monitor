@@ -1,2 +1,3 @@
 DOMAIN = "kvv_departure_monitor"
 DEFAULT_UPDATE_INTERVAL = 30
+DEFAULT_ITEM_LIMIT = 10
